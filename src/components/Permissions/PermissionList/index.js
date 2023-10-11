@@ -11,8 +11,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
-function PermissionList({ list, handleEdit }) {
+function PermissionList({ list, handleEdit, handleDelete }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -31,16 +32,30 @@ function PermissionList({ list, handleEdit }) {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {item.employeeFirstName}
+                {item.employeeName}
               </TableCell>
-              <TableCell align="left">{item.employeeLastName}</TableCell>
+              <TableCell align="left">{item.employeeSurname}</TableCell>
               <TableCell align="left">
-                {item.permissionType?.description}
+                {item.permissionTypeDescription}
               </TableCell>
               <TableCell align="center">
-                <Button variant="contained" onClick={() => handleEdit(item)}>
-                  Edit
-                </Button>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Button variant="contained" onClick={() => handleEdit(item)}>
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
               </TableCell>
             </TableRow>
           ))}
@@ -53,6 +68,7 @@ function PermissionList({ list, handleEdit }) {
 PermissionList.propTypes = {
   list: arrayOf(permissionShape),
   handleEdit: func,
+  handleDelete: func,
 };
 
 export default PermissionList;

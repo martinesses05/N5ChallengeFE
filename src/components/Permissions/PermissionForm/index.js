@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { func } from "prop-types";
+import dayjs from "dayjs";
 
 import { useForm, Controller } from "react-hook-form";
 
@@ -16,7 +17,7 @@ import { Container, Row } from "./styles";
 
 function PermissionForm({ onSubmit, permission }) {
   const { permissionTypes } = useContext(PermissionTypeContext);
-  console.log(permission);
+
   const {
     register,
     control,
@@ -24,9 +25,11 @@ function PermissionForm({ onSubmit, permission }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      employeeFirstName: permission?.employeeFirstName,
-      employeeLastName: permission?.employeeLastName,
-      permissionType: permission?.permissionType?.id,
+      id: permission?.id || 0,
+      employeeName: permission?.employeeName,
+      employeeSurname: permission?.employeeSurname,
+      permissionTypeId: permission?.permissionTypeId || "",
+      permissionDate: dayjs(Date()).format("YYYY-MM-DD"),
     },
   });
 
@@ -35,34 +38,39 @@ function PermissionForm({ onSubmit, permission }) {
       <Container>
         <Row>
           <TextField
-            {...register("employeeFirstName", { required: true })}
+            {...register("employeeName", { required: true })}
             label="First Name"
             variant="outlined"
             fullWidth
           />
-          {errors.employeeFirstName && <span>This field is required</span>}
+          {errors.employeeName && <span>This field is required</span>}
         </Row>
         <Row>
           <TextField
-            {...register("employeeLastName", { required: true })}
+            {...register("employeeSurname", { required: true })}
             label="Last Name"
             variant="outlined"
             fullWidth
           />
-          {errors.employeeLastName && <span>This field is required</span>}
+          {errors.employeeSurname && <span>This field is required</span>}
         </Row>
         <Row>
           <FormControl fullWidth>
             <InputLabel id="permissionTypeLabel">Permission Type</InputLabel>
             <Controller
               control={control}
-              name="permissionType"
-              {...register("permissionType", { required: true })}
+              name="permissionTypeId"
+              {...register("permissionTypeId", { required: true })}
               render={({ field }) => (
                 <Select
                   labelId="permissionTypeLabel"
                   {...field}
-                  label="Permission Typw"
+                  label="Permission Type"
+                  defaultValue={
+                    permission?.permissionTypeId > 0
+                      ? permission?.permissionTypeId
+                      : ""
+                  }
                 >
                   {permissionTypes.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
@@ -73,7 +81,7 @@ function PermissionForm({ onSubmit, permission }) {
               )}
             />
           </FormControl>
-          {errors.permissionType && <span>This field is required</span>}
+          {errors.permissionTypeId && <span>This field is required</span>}
         </Row>
         <Button type="submit" variant="contained">
           Save

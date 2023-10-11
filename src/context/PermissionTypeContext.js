@@ -1,18 +1,21 @@
+import routes from "@/constants/routes";
+import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
 
 export const PermissionTypeContext = createContext();
-
-const mock = [
-  { id: 1, description: "Admin" },
-  { id: 2, description: "Basic" },
-];
 
 const PermissionTypeProvider = (props) => {
   const [permissionTypes, setPermissionTypes] = useState([]);
 
   useEffect(() => {
-    // call api and set permission types
-    setPermissionTypes(mock);
+    axios
+      .get(`${routes.permissionTypes}/?Page=1&PageSize=100`)
+      .then((result) => {
+        setPermissionTypes(result.data.list);
+      })
+      .catch((error) => {
+        console.log("Error when try to get all permission types");
+      });
   }, []);
 
   return (

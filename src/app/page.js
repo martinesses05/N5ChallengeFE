@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import Header from "@/components/Header";
 import Box from "@mui/material/Box";
@@ -10,41 +10,14 @@ import PermissionList from "@/components/Permissions/PermissionList";
 
 import { ActionContainer } from "./styles";
 import PermissionForm from "@/components/Permissions/PermissionForm";
-import PermissionTypeProvider from "@/context/PermissionTypeContext";
+import { PermissionContext } from "@/context/PermissionContext";
 
 export default function Home() {
+  const { permissions, createPermission, updatePermission, deletePermission } =
+    useContext(PermissionContext);
+
   const [showModal, setShowModal] = useState(false);
   const [permission, setPermission] = useState(null);
-
-  const mockList = [
-    {
-      id: 1,
-      employeeFirstName: "Martin",
-      employeeLastName: "Esses",
-      permissionType: {
-        id: 1,
-        description: "Admin",
-      },
-    },
-    {
-      id: 2,
-      employeeFirstName: "Gustavo",
-      employeeLastName: "Rodriguez",
-      permissionType: {
-        id: 2,
-        description: "Basic",
-      },
-    },
-    {
-      id: 3,
-      employeeFirstName: "Carlos",
-      employeeLastName: "Gonzalez",
-      permissionType: {
-        id: 1,
-        description: "Admin",
-      },
-    },
-  ];
 
   const handleCreate = () => {
     setPermission(null);
@@ -57,7 +30,9 @@ export default function Home() {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
+    if (data?.id > 0) updatePermission(data);
+    else createPermission(data);
+
     setPermission(null);
     setShowModal(false);
   };
@@ -75,14 +50,18 @@ export default function Home() {
   };
 
   return (
-    <PermissionTypeProvider>
+    <>
       <Header />
       <ActionContainer>
         <Button variant="contained" onClick={handleCreate}>
           Create Permission
         </Button>
       </ActionContainer>
-      <PermissionList list={mockList} handleEdit={handleEdit} />
+      <PermissionList
+        list={permissions}
+        handleEdit={handleEdit}
+        handleDelete={deletePermission}
+      />
       <Modal
         open={showModal}
         onClose={() => setShowModal(false)}
@@ -93,6 +72,6 @@ export default function Home() {
           <PermissionForm onSubmit={onSubmit} permission={permission} />
         </Box>
       </Modal>
-    </PermissionTypeProvider>
+    </>
   );
 }

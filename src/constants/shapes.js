@@ -7,8 +7,8 @@ export const permissionTypeShape = shape({
 
 export const permissionShape = shape({
   id: number,
-  employeeFirstName: string.isRequired,
-  employeeLastName: string.isRequired,
-  permissionType: permissionTypeShape.isRequired,
+  employeeName: string.isRequired,
+  employeeSurname: string.isRequired,
+  permissionTypeId: number.isRequired,
   permissionDate: oneOfType([string, instanceOf(Date)]),
 });
